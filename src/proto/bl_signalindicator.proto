@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package bl;
+
+import "google/protobuf/empty.proto";
+
+option go_package = ".;bl";
+
+
+service SignalIndicatorService{
+  rpc CheckSignalIndicator(google.protobuf.Empty) returns (google.protobuf.Empty);
+}

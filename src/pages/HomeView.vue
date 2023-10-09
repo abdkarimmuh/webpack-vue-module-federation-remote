@@ -14,5 +14,9 @@ export default defineComponent({
   components: {
     HelloWorld,
   },
+  async mounted() {
+    await this.$store.dispatch("signalIndicator/clearSignalRequest");
+    await this.$store.dispatch("signalIndicator/getSignal");
+  },
 });
 </script>
