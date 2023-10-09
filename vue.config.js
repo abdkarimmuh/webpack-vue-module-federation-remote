@@ -1,6 +1,6 @@
 const { defineConfig } = require("@vue/cli-service");
 const { ModuleFederationPlugin } = require("webpack").container;
-// const { VueLoaderPlugin } = require("vue-loader");
+const deps = require("./package.json").dependencies;
 
 module.exports = defineConfig({
   pages: {
@@ -11,16 +11,8 @@ module.exports = defineConfig({
   publicPath: "auto",
   configureWebpack: {
     devServer: {
-      headers: { "Access-Control-Allow-Origin": "*" }
+      headers: { "Access-Control-Allow-Origin": "*" },
     },
-    // module: {
-    //   rules: [
-    //     {
-    //       test: /\.vue$/,
-    //       loader: "vue-loader",
-    //     },
-    //   ],
-    // },
     optimization: {
       splitChunks: {
         cacheGroups: {
@@ -47,13 +39,18 @@ module.exports = defineConfig({
         name: "remote",
         filename: "remoteEntry.js",
         exposes: {
+          "./store": "./src/store/index.js",
           "./HelloWorld": "./src/components/HelloWorld.vue",
           "./AboutView": "./src/pages/AboutView.vue",
         },
         shared: {
-          vue: { singleton: true },
-          tailwindcss: {},
-          ...require("./package.json").dependencies
+          ...deps,
+          vue: {
+            eager: true,
+            singleton: true,
+            requiredVersion: deps.vue,
+            strictVersion: true,
+          },
         },
       }),
     ],
