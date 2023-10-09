@@ -1,6 +1,6 @@
 const { defineConfig } = require("@vue/cli-service");
-const webpack = require("webpack");
-// const path = require("path");
+const { ModuleFederationPlugin } = require("webpack").container;
+// const { VueLoaderPlugin } = require("vue-loader");
 
 module.exports = defineConfig({
   pages: {
@@ -10,6 +10,14 @@ module.exports = defineConfig({
   },
   publicPath: "auto",
   configureWebpack: {
+    // module: {
+    //   rules: [
+    //     {
+    //       test: /\.vue$/,
+    //       loader: "vue-loader",
+    //     },
+    //   ],
+    // },
     optimization: {
       splitChunks: {
         cacheGroups: {
@@ -31,25 +39,21 @@ module.exports = defineConfig({
       },
     },
     plugins: [
-      new webpack.container.ModuleFederationPlugin({
+      // new VueLoaderPlugin(),
+      new ModuleFederationPlugin({
         name: "remote",
         filename: "remoteEntry.js",
         exposes: {
-          "./HelloWorld.vue": "./src/components/HelloWorld.vue",
-          "./AboutView.vue": "./src/pages/AboutView.vue",
+          "./HelloWorld": "./src/components/HelloWorld.vue",
+          "./AboutView": "./src/pages/AboutView.vue",
         },
         shared: {
-          vue: {
-            singleton: true,
-          },
+          vue: { singleton: true },
+          tailwindcss: {},
+          ...require("./package.json").dependencies
         },
       }),
     ],
-    // resolve: {
-    //   alias: {
-    //     "@": path.resolve(__dirname, "./src"),
-    //   },
-    // },
   },
   transpileDependencies: true,
 });
