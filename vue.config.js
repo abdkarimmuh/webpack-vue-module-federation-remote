@@ -10,6 +10,9 @@ module.exports = defineConfig({
   },
   publicPath: "auto",
   configureWebpack: {
+    devServer: {
+      headers: { "Access-Control-Allow-Origin": "*" }
+    },
     // module: {
     //   rules: [
     //     {
